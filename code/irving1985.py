@@ -221,13 +221,13 @@ def main(args):
 
     people = np.array([1,2,3,4,5,6])
     # the problem demands a strict preference order
-    example1 = np.array([[0,0,0,0,0],
-                        [2,6,4,3,5],
-                        [3,5,1,6,4],
-                        [1,6,2,5,4],
-                        [5,2,3,6,1],
-                        [6,1,3,4,2],
-                        [4,2,5,1,3]])
+    # example1 = np.array([[0,0,0,0,0],
+    #                     [2,6,4,3,5],
+    #                     [3,5,1,6,4],
+    #                     [1,6,2,5,4],
+    #                     [5,2,3,6,1],
+    #                     [6,1,3,4,2],
+    #                     [4,2,5,1,3]])
     example2 = np.array([[0,0,0,0,0],#added row to make indexing work
                          [4,6,2,5,3],
                          [6,3,5,1,4],
@@ -236,7 +236,7 @@ def main(args):
                          [4,2,3,6,1],
                          [5,1,4,2,3]])
 
-    matcher = Irving1985(people, example1)
+    matcher = Irving1985(people, example2)
     matcher.match()
 
 if __name__ == "__main__":

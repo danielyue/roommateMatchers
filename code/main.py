@@ -13,6 +13,8 @@ prefsList.insert(0, [0] * (len(prefsList) - 1))
 # it prints!
 print prefsList
 
+import pdb; pdb.set_trace()
+
 # these don't work
 #irvingMatcher = Irving1985(range(len(prefsList)), prefsList)
 #irvingMatcher.match()
