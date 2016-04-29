@@ -29,7 +29,6 @@ class Irving1985:
         stableFound = self.phase2()
         logging.debug('')
         if stableFound:
-
             logging.info("Phase 2 completed. Final Results:")
             logging.info("---------------------------------")
             for i, match in enumerate(self.reducedPreferences[1:]):

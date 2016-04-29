@@ -1,5 +1,6 @@
 from makeRoomingPrefs import MakeRoomingPrefs
 from irving1985 import Irving1985
+import numpy as np
 
 # just pass in the file
 prefsMaker = MakeRoomingPrefs('../roomingQuestionnaireResponses.csv')
@@ -8,13 +9,16 @@ prefsMaker = MakeRoomingPrefs('../roomingQuestionnaireResponses.csv')
 prefsList = prefsMaker.prefs(gender="Male", club="Leverett")
 
 # I thought we might need this to get Irving to work, but Irving doesn't work
-prefsList.insert(0, [0] * (len(prefsList) - 1))
+# prefsList.insert(0, [0] * (len(prefsList) - 1))
+
+prefsList = np.array(prefsList)
 
 # it prints!
 print prefsList
 
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
+people = np.array(list(range(1,len(prefsList))))
 
 # these don't work
-#irvingMatcher = Irving1985(range(len(prefsList)), prefsList)
-#irvingMatcher.match()
+irvingMatcher = Irving1985(people, prefsList)
+irvingMatcher.match()
