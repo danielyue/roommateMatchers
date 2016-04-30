@@ -9,11 +9,20 @@ class MakeRoomingPrefs:
 
     ''' keeps only selected gender and club '''
     def filter(self, P):
+        # add IDs
+        P["id"] = range(len(P))
         if self.gender != "all":
             P = P[P["Gender"] == self.gender]
         if self.club != "all":
             P = P[P["Are you in any of the following groups? (Check all that apply.)"].str.contains(self.club)]
         return P
+
+    ''' select N observations '''
+    def randomSelection(self, P, randN):
+        if randN >= len(P):
+            return P
+        else:
+            return P.sample(randN)
 
     ''' pandas dataframe to numpy array '''
     def clean(self, P):
@@ -21,6 +30,8 @@ class MakeRoomingPrefs:
         # remove timestamp and email
         P = P.drop("Timestamp", 1)
         P = P.drop("Username", 1)
+        P = P.drop("Gender", 1)
+        P = P.drop("Are you in any of the following groups? (Check all that apply.)", 1)
 
         # strings to numbers
         oldNewMap = {'Clean & Organized: Everything has a place': 3,
@@ -111,7 +122,8 @@ class MakeRoomingPrefs:
         P['How important is this to you?'] = P['How important is this to you?'].map(oldNewMap)
         for j in range(1, 12):
             P['On the above, how important is it that your roommate is the same as you?.' + str(j)] = P['On the above, how important is it that your roommate is the same as you?.' + str(j)].map(oldNewMap)
-        return P.values[:,2:-1]
+
+        return P.values[:,1:]
 
     ''' score of i for j '''
     def score(self, i, j):
@@ -122,10 +134,12 @@ class MakeRoomingPrefs:
         return s
 
     ''' preference ordering '''
-    def prefs(self, gender="all", club="all"):
+    def prefs(self, gender="all", club="all", randN=0):
         self.gender = gender
         self.club = club
         self.P = self.filter(pandas.read_csv(self.fileName, sep=','))
+        if randN:
+            self.P = self.randomSelection(self.P, randN)
         self.X = self.clean(self.P)
         self.N = np.size(self.X, axis = 0) # number of rows
         self.Q = np.size(self.X, axis = 1) # number of questions
@@ -144,8 +158,15 @@ class MakeRoomingPrefs:
         prefs = [[i[0] for i in sortedScores[j][1]][:-1] for j in range(self.N)]
         return prefs
 
-    ''' preferences with names instead of numbers '''
-    def prefsNames(self):
-        prefs = self.prefs()
-        return [(self.P.loc[i]["Name"], [self.P.loc[j]["Name"]
+    ''' preferences lists, returns actual ids from full spreadsheet '''
+    def prefsIds(self, gender="all", club="all", randN=0):
+        prefs = self.prefs(gender, club, randN)
+        # link with original index
+        return [[self.X[i][-1] for i in prefs[j]] for j in range(self.N)]
+
+    ''' preferences, returns names instead of numbers '''
+    def prefsNames(self, gender="all", club="all", randN=0):
+        prefs = self.prefsIds(gender, club, randN)
+        #import pdb; pdb.set_trace()
+        return [(self.P.loc[self.X[i][-1]]["Name"], [self.P.loc[j]["Name"]
             for j in prefs[i]]) for i in range(len(prefs))]

@@ -6,7 +6,7 @@ import numpy as np
 prefsMaker = MakeRoomingPrefs('../roomingQuestionnaireResponses.csv')
 
 # choose gender and club if desired, can delete to run on all
-prefsList = prefsMaker.prefs(gender="Male", club="Leverett")
+prefsList = prefsMaker.prefsNames(gender="Male", club="Leverett", randN=4)
 
 # it prints!
 print prefsList
