@@ -6,6 +6,7 @@ class MakeRoomingPrefs:
         self.fileName = fileName
         self.maxWeight = 4
         self.maxDist = 4
+        self.crossWalk = {}
 
     ''' keeps only selected gender and club '''
     def filter(self, P):
@@ -133,6 +134,11 @@ class MakeRoomingPrefs:
             s -= abs(self.X[i][2*q] - self.X[j][2*q]) * self.X[i][(2*q) + 1]
         return s
 
+    ''' dictionary links prefs with real names '''
+    def crossWalkFn(self, prefs):
+        for i in range(len(prefs)):
+            self.crossWalk[i] = self.P.loc[self.X[i][-1]]["Name"]
+
     ''' preference ordering '''
     def prefs(self, gender="all", club="all", randN=0):
         self.gender = gender
@@ -156,17 +162,5 @@ class MakeRoomingPrefs:
         sortedScores = [(i, list(reversed(sorted(scores[i].items(),
             key=operator.itemgetter(1))))) for i in range(self.N)]
         prefs = [[i[0] for i in sortedScores[j][1]][:-1] for j in range(self.N)]
+        self.crossWalkFn(prefs) # sets crossWalk
         return prefs
-
-    ''' preferences lists, returns actual ids from full spreadsheet '''
-    def prefsIds(self, gender="all", club="all", randN=0):
-        prefs = self.prefs(gender, club, randN)
-        # link with original index
-        return [[self.X[i][-1] for i in prefs[j]] for j in range(self.N)]
-
-    ''' preferences, returns names instead of numbers '''
-    def prefsNames(self, gender="all", club="all", randN=0):
-        prefs = self.prefsIds(gender, club, randN)
-        #import pdb; pdb.set_trace()
-        return [(self.P.loc[self.X[i][-1]]["Name"], [self.P.loc[j]["Name"]
-            for j in prefs[i]]) for i in range(len(prefs))]
