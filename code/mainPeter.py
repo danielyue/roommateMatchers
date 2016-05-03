@@ -6,13 +6,10 @@ import numpy as np
 prefsMaker = MakeRoomingPrefs('../roomingQuestionnaireResponses.csv')
 
 # choose gender and club if desired, can delete to run on all
-prefsList = prefsMaker.prefs(gender="Male", club="Leverett", randN=4)
-
-# it prints!
+prefsList = np.array(prefsMaker.prefs(gender="Male",club="Leverett", randN=6))
 print prefsList
-print prefsMaker.crossWalk
 
-people = np.array(list(range(1,len(prefsList))))
+people = np.array(range(len(prefsList)))
 
 irvingMatcher = Irving1985(people, prefsList)
-irvingMatcher.match()
+print irvingMatcher.match()

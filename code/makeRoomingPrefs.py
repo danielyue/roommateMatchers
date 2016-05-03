@@ -140,7 +140,7 @@ class MakeRoomingPrefs:
             self.crossWalk[i] = self.P.loc[self.X[i][-1]]["Name"]
 
     ''' preference ordering '''
-    def prefs(self, gender="all", club="all", randN=0):
+    def prefs(self, gender="all", club="all", randN=0, returnScores="n"):
         self.gender = gender
         self.club = club
         self.P = self.filter(pandas.read_csv(self.fileName, sep=','))
@@ -159,8 +159,11 @@ class MakeRoomingPrefs:
                     scores[i][j] = -1 # can't match with self
 
         # sort scores and return preference ordering
-        sortedScores = [(i, list(reversed(sorted(scores[i].items(),
-            key=operator.itemgetter(1))))) for i in range(self.N)]
-        prefs = [[i[0] for i in sortedScores[j][1]][:-1] for j in range(self.N)]
+        sortedScores = [list(reversed(sorted(scores[i].items(),
+            key=operator.itemgetter(1)))) for i in range(self.N)]
+        prefs = [[i[0] for i in sortedScores[j]][:-1] for j in range(self.N)]
         self.crossWalkFn(prefs) # sets crossWalk
-        return prefs
+        if returnScores == "y":
+            return sortedScores
+        else:
+            return prefs
